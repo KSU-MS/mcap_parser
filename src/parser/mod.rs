@@ -1,17 +1,26 @@
+use std::fmt::format;
+
 // Import anything needed
-mod mcap_tools;
+mod mcap_utils;
 
 // An enum for the diffrent output types
+#[derive(Default)]
 pub enum OutputFormats {
+    #[default]
     LegacyOmni,
 }
 
 // A struct to hold all the basic data needed to parse
+#[derive(Default)]
 pub struct ParserHandaler {
     mcaps: Vec<String>,
     output_dir: String,
     giga_output: bool,
     format: OutputFormats,
+
+    raw_timestamps: Vec<u64>,
+    raw_groups: Vec<String>,
+    raw_messages: Vec<(String, f64)>,
 }
 
 // The functions for our struct
@@ -41,6 +50,7 @@ impl ParserHandaler {
             output_dir: target,
             giga_output: is_giga,
             format: target_format,
+            ..Default::default()
         };
     }
 
@@ -52,12 +62,36 @@ impl ParserHandaler {
             output_dir: target_dir,
             giga_output: true,
             format: OutputFormats::LegacyOmni,
+            ..Default::default()
         };
     }
 
-    pub fn parse(self) {
-        for cap in self.mcaps {
-            mcap_tools::parse_mcap(cap)
+    pub fn parse(mut self) {
+        for cap in &self.mcaps {
+            (self.raw_timestamps, self.raw_groups, self.raw_messages) = mcap_utils::parse_mcap(cap);
+
+            if !self.giga_output {
+                self.format();
+
+                self.save();
+                self.raw_groups = Vec::new();
+                self.raw_messages = Vec::new();
+                self.raw_timestamps = Vec::new();
+            }
         }
+
+        if self.giga_output {}
+    }
+
+    fn save(&self) {}
+
+    fn format(&self) {
+        match self.format {
+            _ => self.format_legacy_omni(),
+        };
+    }
+
+    fn format_legacy_omni(&self) {
+        println!("Formating with LegacyOmni style");
     }
 }

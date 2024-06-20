@@ -1,12 +1,15 @@
 use mcap;
 use std::{fs::File, io::Read};
 
-pub fn parse_mcap(file_path: String) {
+pub fn parse_mcap(file_path: &String) -> (Vec<u64>, Vec<String>, Vec<(String, f64)>) {
     // Open the file from our path
     let file = File::open(file_path);
 
-    // Make a buffer to throw the output into
-    let mut buffer = Vec::new();
+    // Make some buffers to throw the outputs into
+    let mut buffer = Vec::new(); // buffer for the file
+    let mut times: Vec<u64> = Vec::new();
+    let mut groups: Vec<String> = Vec::new();
+    let mut outputs: Vec<(String, f64)> = Vec::new();
 
     // Put the file into our buffer
     file.unwrap().read_to_end(&mut buffer).unwrap();
@@ -21,8 +24,16 @@ pub fn parse_mcap(file_path: String) {
         mcap::read::Options::IgnoreEndMagic.into(),
     );
 
+    let mut num: u16 = 0;
+
     // Print every message for debug lol
     for msg in messages.unwrap() {
-        println!("{:?}", msg.unwrap());
+        if num <= 3 {
+            println!("data: {:?}", msg.unwrap());
+        }
+
+        num += 1;
     }
+
+    return (times, groups, outputs);
 }
