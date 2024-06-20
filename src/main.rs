@@ -3,9 +3,16 @@
 use eframe::egui;
 
 mod gui;
-mod mcap_parser;
+mod parser;
 
 fn main() -> Result<(), eframe::Error> {
+    let mut guy = parser::ParserHandaler::test(
+        String::from("/home/ctrl/comp_mcaps/KMS_data/accel/06_14_2024_09_39_26.mcap"),
+        String::from("./output"),
+    );
+
+    guy.parse();
+
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([640.0, 240.0]) // wide enough for the drag-drop overlay text
