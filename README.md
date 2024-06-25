@@ -1,2 +1,7 @@
 # WIP
-I've got the general idea of what I want now, just took like 2 langauges, 3 rm -rfs and still fucking stealing HyTech code but this time to try and fix it instead of just straight stealing it...... Is the omni format really that worth it??????
+ - [-] Get mcap basic parsing done
+ - [ ] Get a file out in the omni format
+ - [ ] Write the thread dispatcher
+ - [ ] Make GUI
+ - [ ] Package better
+ - [ ] IDK
