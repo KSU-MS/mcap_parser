@@ -1,6 +1,6 @@
 # WIP
  - [x] Get mcap basic parsing done
- - [ ] Get a file out in the omni format
+ - [x] Get a file out in the omni format
  - [x] Write the thread dispatcher
  - [ ] Make GUI
  - [ ] Package better
