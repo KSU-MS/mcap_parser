@@ -1,9 +1,13 @@
-# WIP
+# PARSER
  - [x] Get mcap basic parsing done
  - [x] Get a file out in the omni format
  - [x] Write the thread dispatcher
- - [ ] Make GUI
+ - [ ] Add recursive folder scanning
+ - [ ] Add auto fix of MCAP files
  - [ ] Package better
- - [ ] IDK
 
- Not in any particular order, if anyone feels like helping that would be cool
+# GUI
+ - [x] Make GUI
+ - [ ] persistance for file paths and format
+ - [ ] add persistance for file structure b4 parse
+ - [ ] Identify the diff between file and folder and parse acordingly

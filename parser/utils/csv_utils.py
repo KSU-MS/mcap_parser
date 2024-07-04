@@ -1,8 +1,8 @@
 import csv
 
 
-def write_csv_TVN(file_name, data):
-    with open(file_name + ".csv", mode="w", newline="") as file:
+def write_csv_TVN(file_name, data, output):
+    with open(output + file_name + ".csv", mode="w", newline="") as file:
         writer = csv.writer(file)
 
         topics = ["Time", "Name", "Value"]
@@ -13,8 +13,8 @@ def write_csv_TVN(file_name, data):
                 writer.writerow(val)
 
 
-def write_csv_OMNI(file_name, data, topics):
-    with open(file_name + ".csv", mode="w", newline="") as file:
+def write_csv_OMNI(file_name, data, topics, output):
+    with open(output + file_name + ".csv", mode="w", newline="") as file:
         # Set some gizmos up
         writer = csv.writer(file)
         mod_data = []
