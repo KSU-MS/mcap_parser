@@ -1,7 +1,7 @@
 from tkinter import filedialog
 from parser.parse_man import parse_folder, process_file
 from configparser import ConfigParser
-
+import os
 
 def userinfo():
     parser = ConfigParser()
@@ -19,7 +19,7 @@ def userinfo():
 def select():
     ddir = userinfo.origin()
     if (userinfo):
-        ddir = userinfo.o
+        ddir = userinfo.origin
 
     files = filedialog.askopenfilenames(title="Select", initialdir=ddir)
     return files
@@ -35,6 +35,11 @@ def upload():
     return dest
 
 
-def handle_files(select, dest, style): 
-    parse_folder(select, dest, style="OMNI")
-    process_file()
+def handle_files(selectedFiles, dest, style): 
+    type_tup = os.path.splittext(selectedFiles)
+    type = type_tup[1]
+
+    if (type == 'dir'):
+        parse_folder(selectedFiles, dest, style="OMNI")
+    if (type == '.mcap'):
+        process_file(selectedFiles, dest, style="OMNI")
