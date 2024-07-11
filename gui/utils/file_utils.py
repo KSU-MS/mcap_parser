@@ -1,45 +1,49 @@
 from tkinter import filedialog
-from parser.parse_man import parse_folder, process_file
 from configparser import ConfigParser
-import os
+from parser.parse_man import parse_folder, process_file
+import os 
 
-def userinfo():
-    parser = ConfigParser()
-    parser.read("saved_paths.txt") 
+# class userinfo(): # need to fix CONFIG parser
 
-    def origin():
-        grab_dir = parser.get('user_paths', 'grab')
-        return grab_dir
+    # parser = ConfigParser()
+    # parser.read("saved_paths.txt") 
     
-    def destination():
-        upload_dir = parser.get('user_paths', 'upload')
-        return upload_dir
+    # grab_dir = parser.get('user_paths', 'grab')
+    # initial_origin = grab_dir
+    # upload_dir = parser.get('user_paths', 'upload')
+    # initial_dest = upload_dir
 
+def select(): 
+    global files
+    wawa = filedialog.askopenfilenames(title="Select") # mk include inital dir
+    files = str(wawa[0])
+    print(files)
+    # "('C:/Users/rexro/Documents/06_14_2024_16_42_58-fixed.mcap',)"
 
-def select():
-    ddir = userinfo.origin()
-    if (userinfo):
-        ddir = userinfo.origin
+def drop(root, event):
+    global files
+    files = str(root.tk.splitlist(event.data))
 
-    files = filedialog.askopenfilenames(title="Select", initialdir=ddir)
-    return files
+def upload(): 
+    global dir
+    dir = str(filedialog.askdirectory(title="Upload Dir")) # mk include initial dir 
 
+# def style_select(): # need to find solution within this scope
+#     global style
+#     style = 
 
-def drop(root, event): # dnd functionality (MEOW!)
-    files = root.tk.splitlist(event.data)
-    return files
+def handle_files(): 
+    
+    fileExtension = os.path.splitext(files)[1]
+    print(fileExtension)
 
+    if (fileExtension == ".mcap',)"): # better ways to do this ?
+        process_file(files, dir, style)
+    else:
+        parse_folder(files, dir, style)
 
-def upload():
-    dest = filedialog.askdirectory(title="Upload Dir", initialdir=userinfo.destination)
-    return dest
+    print(f'Parsing {files} into {dir} formatted in {style}')
 
-
-def handle_files(selectedFiles, dest, style): 
-    type_tup = os.path.splittext(selectedFiles)
-    type = type_tup[1]
-
-    if (type == 'dir'):
-        parse_folder(selectedFiles, dest, style="OMNI")
-    if (type == '.mcap'):
-        process_file(selectedFiles, dest, style="OMNI")
+files = " "
+dir   = " "
+style = " "
