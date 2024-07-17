@@ -1,2 +1,4 @@
 mcap         
 mcap_protobuf
+customtkinter
+tkinterdnd2
