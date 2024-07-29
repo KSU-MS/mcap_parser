@@ -5,8 +5,8 @@ from gui.gooey import setupGUI
 
 def main():
     # parse_folder(sys.argv[1], sys.argv[2], "OMNI")
-    setupGUI(headless=False, passed_function=process_file) # difficulty accessing parseman from gooey on my computer
-
+    setupGUI(True, process_file) # difficulty accessing parseman from gooey
+    
 
 if __name__ == "__main__":
     main()

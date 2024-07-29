@@ -2,9 +2,9 @@
 Use for parseman's file and folder parsers in OMNI and TVN formats.
 
 Issues:
-- [ ] Headless argument (in progress)
+- [X] Headless argument
 - [X] DND
 - [ ] trash creation
-- [ ] Persistence
-- [ ] no progress bar
-- [ ] CTK usage
+- [ ] Persistence (in progress)
+- [ ] no progress bar (needs some work)
+- [ ] ctk usage/prettify UI
