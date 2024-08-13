@@ -1,10 +1,7 @@
-from tkinter import filedialog
-from configparser import ConfigParser
+from tkinter import filedialog, END
+from .. import gooey
+import tkinter as tk
+import json, os
 
-# abstract class 
-def drop(path, list, event):
-    path.set(event.data)
-    list.insert("end", event.data)
-
-
-
+# make abstract class and child functions for upload/deload and other reusables
+# try to figure out how to put utils in this file instead of in gui()
