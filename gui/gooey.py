@@ -1,63 +1,68 @@
 import tkinter as tk
+# import gui.utils.file_utils as utl
+from tkinter import ttk, filedialog
 from tkinterdnd2 import DND_FILES, TkinterDnD
-from tkinter import filedialog, ttk
-# from gui.utils.file_utils import drop_upload, select_upload, drop_deload, select_deload
-import json
-import os
-
-
-SAVE_FILE = "saved_files.json"
+import json, os
 
 def gui(passed_function):
     
+    SAVE_FILE = "saved_files.json"
+
     def drop_upload(event):
-        upload_path.set(event.data)
-        llistbox.insert("end", event.data)
+        event_list = event.data
+        values = [str(x) for x in event_list[event]]
+        path = " ".join(values)
+        
+        upload_path.set(path)
+        llistbox.insert("end", path)
 
     def drop_deload(event):
-        deload_path.set(event.data)
-        rlistbox.insert("end", event.data)
+        event_list = event.data
+        values = [str(x) for x in event_list[event]]
+        path = " ".join(values)
+
+        deload_path.set(path)
+        rlistbox.insert("end", path)
 
     def select_upload():
         files = filedialog.askopenfilenames(title="File Select")
-        files = str(files[0])
-        upload_path.set(files)
-        llistbox.insert("end", files)
+        if files:
+            files = str(files[0])
+            upload_path.set(files)
+            llistbox.insert("end", files)
 
     def select_deload():
         files = filedialog.askdirectory(title="File Select")
         files = str(files)
-        deload_path.set(files)
-        rlistbox.insert("end", files)
+        if files:
+            deload_path.set(files)
+            rlistbox.insert("end", files)
 
     def handle_files():
-        progress_bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky='ew')
-        app.update_idletasks()  
         upload = upload_path.get()
-        deload = deload_path.get()
+        deload = deload_path.get() + "/"
         style = parse_form.get()
-        passed_function(upload, deload, style)
-        progress_bar.grid_forget()  # Hide the progress bar after the task is done
+        if upload and deload:
+            progress_bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky='ew') # doesn't show actual progess
+            app.update_idletasks() 
+            passed_function(upload, deload, style)
+            progress_bar.grid_forget()
 
     def select_up():
         try:
             selected_file = llistbox.get(llistbox.curselection())
             upload_path.set(selected_file)
-            print(f"Selected upload path: {selected_file}")
         except tk.TclError:
-            print("No file selected in the left listbox.")
+            print("No file selected in the left listbox.")  # add pop up box
 
     def select_down():
         try:
             selected_file = rlistbox.get(rlistbox.curselection())
             deload_path.set(selected_file)
-            print(f"Selected deload path: {selected_file}")
         except tk.TclError:
-            print("No file selected in the right listbox.")
-            
-        # File to save the list of files
+            print("No file selected in the right listbox.") # add pop up box     
 
-    def save_files():
+    def save_files(): # need to make functionality for json file creation on first use
         data = {
             "upload_files": list(llistbox.get(0, tk.END)),
             "deload_files": list(rlistbox.get(0, tk.END))
@@ -73,7 +78,8 @@ def gui(passed_function):
                     llistbox.insert(tk.END, file)
                 for file in data.get("deload_files", []):
                     rlistbox.insert(tk.END, file)
-    
+
+
     app = TkinterDnD.Tk()
     app.title("MCAP Parser")
     app.geometry("800x500")
@@ -95,11 +101,11 @@ def gui(passed_function):
     label_left = tk.Label(left_frame, textvariable=upload_path, width=20, height=2, anchor='w')
     label_left.pack(pady=10, padx=10, anchor='w', fill='x')
 
-    llistbox = tk.Listbox(left_frame, selectmode=tk.SINGLE, background="#ffe0d6") # add select functionality
+    llistbox = tk.Listbox(left_frame, selectmode=tk.SINGLE, background="#ffe0d6")
     llistbox.pack(pady=10, padx=10, anchor='w', fill = 'x')
     llistbox.drop_target_register(DND_FILES)
     llistbox.dnd_bind("<<Drop>>", drop_upload)  
-    # llistbox.bind("<<ListboxSelect>>", select_up)
+    # llistbox.bind("<<ListboxSelect>>", select_up) # was supposed to be how we select files, for now button works instead
     llistbox_but = tk.Button(left_frame, text="Select", command=select_up)
     llistbox_but.pack(pady=10, padx=10)
 
@@ -114,11 +120,11 @@ def gui(passed_function):
     rlistbox.pack(pady=10, padx=10, anchor='w', fill = 'x')
     rlistbox.drop_target_register(DND_FILES)
     rlistbox.dnd_bind("<<Drop>>", drop_deload)
-    # rlistbox.bind("<<ListboxSelect>>", select_down)
+    # rlistbox.bind("<<ListboxSelect>>", select_down) 
     rlistbox_but = tk.Button(right_frame, text="Select", command=select_down)
     rlistbox_but.pack(pady=10, padx=10)
 
-    rbutton = tk.Button(right_frame, text="Select here", command=select_deload)
+    rbutton = tk.Button(right_frame, text="Open Folder", command=select_deload)
     rbutton.pack(pady=10, padx=10, anchor='w', fill='x')
 
     # middle column
@@ -143,7 +149,6 @@ def gui(passed_function):
     load_files()
     app.protocol("WM_DELETE_WINDOW", save_files)
     app.mainloop()                
-
 
 def headless(passed_function):    
 
@@ -174,4 +179,5 @@ def setupGUI(head, passed_function):
 
     else: 
         raise ValueError("No choice for headless. Should be True or False.")
+
 
