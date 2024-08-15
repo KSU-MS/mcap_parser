@@ -1,4 +1,5 @@
 mcap         
 mcap_protobuf
-customtkinter
+tkinter
+argparse
 tkinterdnd2
