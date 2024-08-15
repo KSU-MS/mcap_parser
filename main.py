@@ -26,6 +26,11 @@ def main():
     # cli.add_argument("-x", help="Experimental multithreading for larger files")
     # cli.add_argument("-n", help="Does not try to preserve file structure")
 
+    # Run GUI if no args get passed
+    if len(sys.argv) == 1:
+        open_gui(parse)
+        return
+
     # Collect flags
     args = apar.parse_args()
 
