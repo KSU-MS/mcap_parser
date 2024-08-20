@@ -19,9 +19,15 @@ def parse(input, output, style):
     else:
         thread_file(tasks, "./", input, output, style)
 
+    global progress_length
+    global progress_position
+    progress_length = len(tasks)
+    progress_position = 0
+
     # This just makes us wait until all tasks have been executed
     for task in tasks:
         task.join()
+        progress_position += 1
 
     print("Done")
 
