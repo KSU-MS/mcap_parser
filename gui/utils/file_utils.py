@@ -42,15 +42,13 @@ def show_progress(): # can't figure out how to make this inuitive (not pass app 
     # app.update_idletasks()
     progress_bar.grid_forget()
 
-class handle_files:
-
-    def __init__(parse):
-        upload = upload_path.get()
-        deload = deload_path.get() + "/"
-        style = parse_form.get()
-        if upload and deload:
-            parse(upload, deload, style)
-            # show_progress()
+def handle_files(parse):
+    upload = upload_path.get()
+    deload = deload_path.get() + "/"
+    style = parse_form.get()
+    if upload and deload:
+        parse(upload, deload, style)
+        # show_progress()
 
 class persistence:
 

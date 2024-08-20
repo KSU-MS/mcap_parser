@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 import gui.utils.file_utils as utilities
 
-file_handler = utilities.handle_files()
 persistence = utilities.persistence()
 utils = utilities.front_end()
 
@@ -79,7 +78,7 @@ class middle_frame(tk.Frame):
         tvn = tk.Radiobutton(self, text="TVN", variable=parse_form, value="TVN")
         tvn.pack(pady=10, anchor="s", fill="x")
 
-        process = tk.Button(self, text="Parse", command=lambda: utils.handle_files(parse))
+        process = tk.Button(self, text="Parse", command=lambda: utilities.handle_files(parse))
         process.pack(pady=10, anchor="s", fill="x")
 
 def open_gui(parse):
