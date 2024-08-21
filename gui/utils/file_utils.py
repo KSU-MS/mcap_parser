@@ -6,7 +6,7 @@ SAVE_FILE = "saved_files.json"
 
 class front_end: # abstract GUI-dependent code
 
-    def drop(event, location, box):
+    def drop(self, event, location, box):
         event_list = event.data
         values = [str(x) for x in event_list[event]]
         path = " ".join(values)
@@ -14,14 +14,14 @@ class front_end: # abstract GUI-dependent code
         location.set(path) # upload_path/deload_path 
         box.insert("end", path) # llistbox/rlistbox
 
-    def select(location, box):
+    def select(self, location, box):
         files = filedialog.askdirectory(title="File Select") # gui dependent
         files = str(files)
         if files:
             location.set(files) # upload_path/deload_path
             box.insert("end", files) # llistbox/rlistbox
 
-    def select_button(location, box):
+    def select_button(self, location, box):
         try:
             selected_file = box.get(box.curselection())
             location.set(selected_file)
@@ -30,7 +30,7 @@ class front_end: # abstract GUI-dependent code
 
 class persistence: # needs error handling
 
-    def save_files(left, right):
+    def save_files(self, left, right):
         data = {
             "upload_files": list(left.get(0, tk.END)),
             "deload_files": list(right.get(0, tk.END)),
@@ -38,7 +38,7 @@ class persistence: # needs error handling
         with open(SAVE_FILE, "w") as f:
             json.dump(data, f)
 
-    def load_files(left, right):
+    def load_files(self, left, right):
         if os.path.exists(SAVE_FILE):
             with open(SAVE_FILE, "r") as f:
                 data = json.load(f)
