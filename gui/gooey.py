@@ -1,20 +1,21 @@
 import tkinter as tk
 from tkinter import ttk
-# import customtkinter
+import customtkinter as ctk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 import gui.utils.file_utils as utilities
 
 persistence = utilities.persistence()
 utils = utilities.front_end()
 
-class Application(tk.Tk):
-    def __init__(self, parse_setting):
+class Application(ctk.CTk):
+    def __init__(self, parse):
         super().__init__()
 
         self.upload_path = tk.StringVar()
         self.deload_path = tk.StringVar()
         self.parse_form = tk.StringVar(value='OMNI')
 
+        ctk.set_appearance_mode("Dark")
         self.upload_path.set("Upload dir")
         self.deload_path.set("Deload dir")
 
@@ -23,12 +24,7 @@ class Application(tk.Tk):
 
         self.left_frame_init = left_frame(self)
         self.right_frame_init = right_frame(self)
-        self.middle_frame_init = middle_frame(self, 
-            parse=parse_setting, 
-            upload_path=self.upload_path, 
-            deload_path=self.deload_path, 
-            parse_form=self.parse_form
-        )
+        self.middle_frame_init = middle_frame(self, parse)
         self.progress_bar = ttk.Progressbar(self, mode="indeterminate")
 
         persistence.load_files(
@@ -48,8 +44,7 @@ class left_frame(tk.Frame):
 
         self.grid(row=0, column=0, sticky="nsew")
 
-        upload_path = tk.StringVar()
-        self.label_left = tk.Label(self, textvariable=upload_path, width=20, height=2, anchor="w")
+        self.label_left = tk.Label(self, textvariable=parent.upload_path, width=20, height=2, anchor="w")
         self.label_left.pack(pady=10, padx=10, anchor="w", fill="x")
 
         self.llistbox = tk.Listbox(self, selectmode=tk.SINGLE, background="#ffe0d6")
@@ -60,7 +55,7 @@ class left_frame(tk.Frame):
         self.llistbox_but = tk.Button(self, text="Select", command=lambda: utils.select_button())
         self.llistbox_but.pack(pady=10, padx=10)
 
-        self.lbutton = tk.Button(self, text="Open Files", command=lambda: utils.select(upload_path, self.llistbox))
+        self.lbutton = tk.Button(self, text="Open Files", command=lambda: utils.select(parent.upload_path, self.llistbox))
         self.lbutton.pack(pady=10, padx=10, anchor="w", fill="x")
 
 class right_frame(tk.Frame):
@@ -69,8 +64,7 @@ class right_frame(tk.Frame):
 
         self.grid(row=0, column=2, sticky="nsew")
 
-        deload_path = tk.StringVar()
-        self.label_right = tk.Label(self, textvariable=deload_path, width=20, height=2, anchor="w")
+        self.label_right = tk.Label(self, textvariable=parent.deload_path, width=20, height=2, anchor="w")
         self.label_right.pack(pady=10, padx=10, anchor="w", fill="x")
 
         self.rlistbox = tk.Listbox(self, selectmode=tk.SINGLE, background="#ffe0d6")
@@ -82,22 +76,22 @@ class right_frame(tk.Frame):
         self.rlistbox_but = tk.Button(self, text="Select", command=lambda: utils.select_button())
         self.rlistbox_but.pack(pady=10, padx=10)
 
-        self.rbutton = tk.Button(self, text="Open Folder", command=lambda: utils.select(deload_path, self.rlistbox))
+        self.rbutton = tk.Button(self, text="Open Folder", command=lambda: utils.select(parent.deload_path, self.rlistbox))
         self.rbutton.pack(pady=10, padx=10, anchor="w", fill="x")
 
 class middle_frame(tk.Frame):
-    def __init__(self, parent, parse, upload_path, deload_path, parse_form):
+    def __init__(self, parent, parse):
         super().__init__(parent)
 
         self.grid(row=0, column=1, sticky="nsew")
 
-        omni = tk.Radiobutton(self, text="OMNI", variable=parse_form, value="OMNI")
+        omni = tk.Radiobutton(self, text="OMNI", variable=parent.parse_form, value="OMNI")
         omni.pack(pady=10, anchor="s", fill="x")
-        tvn = tk.Radiobutton(self, text="TVN", variable=parse_form, value="TVN")
+        tvn = tk.Radiobutton(self, text="TVN", variable=parent.parse_form, value="TVN")
         tvn.pack(pady=10, anchor="s", fill="x")
 
         process = tk.Button(self, text="Parse", command=lambda: utilities.handle_files(
-                upload_path, deload_path, parse_form, parse
+                parent.upload_path, parent.deload_path, parent.parse_form, parse
                 )
         )
         process.pack(pady=10, anchor="s", fill="x")

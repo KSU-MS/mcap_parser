@@ -59,6 +59,8 @@ def handle_files(upload_path, deload_path, parse_form, parse):
     upload = upload_path.get()
     deload = deload_path.get() + "/"
     style = parse_form.get()
-    if upload and deload:
+
+    print(upload, deload, style) # just for debugging
+    if (upload != "Upload dir") or (deload != "Deload dir/"): # change to (!= default)
         parse(upload, deload, style)
         # show_progress()
