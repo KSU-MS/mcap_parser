@@ -2,12 +2,9 @@ from tkinter import filedialog
 import tkinter as tk
 import json, os
  
-global upload_path
-global deload_path
-global parse_form
 SAVE_FILE = "saved_files.json"
 
-class front_end:
+class front_end: # abstract GUI-dependent code
 
     def drop(event, location, box):
         event_list = event.data
@@ -18,7 +15,7 @@ class front_end:
         box.insert("end", path) # llistbox/rlistbox
 
     def select(location, box):
-        files = filedialog.askdirectory(title="File Select")
+        files = filedialog.askdirectory(title="File Select") # gui dependent
         files = str(files)
         if files:
             location.set(files) # upload_path/deload_path
@@ -29,28 +26,9 @@ class front_end:
             selected_file = box.get(box.curselection())
             location.set(selected_file)
         except tk.TclError:
-            tk.messagebox.showerror("No file selected in the left listbox.")  
+            tk.messagebox.showerror("No file selected in the left listbox.") # gui dependent
 
-def show_progress(): # can't figure out how to make this inuitive (not pass app as arg)
-    global progress_length
-    global progress_position
-
-    step_value = progress_position / progress_length
-
-    progress_bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
-    progress_bar.step(step_value)
-    # app.update_idletasks()
-    progress_bar.grid_forget()
-
-def handle_files(parse):
-    upload = upload_path.get()
-    deload = deload_path.get() + "/"
-    style = parse_form.get()
-    if upload and deload:
-        parse(upload, deload, style)
-        # show_progress()
-
-class persistence:
+class persistence: # needs error handling
 
     def save_files(left, right):
         data = {
@@ -68,3 +46,19 @@ class persistence:
                     left.insert(tk.END, file)
                 for file in data.get("deload_files", []):
                     right.insert(tk.END, file)
+
+def show_progress(position, length, bar): # not accessed
+    step_value = position / length
+
+    bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
+    bar.step(step_value)
+    # app.update_idletasks()
+    bar.grid_forget()
+
+def handle_files(upload_path, deload_path, parse_form, parse):
+    upload = upload_path.get()
+    deload = deload_path.get() + "/"
+    style = parse_form.get()
+    if upload and deload:
+        parse(upload, deload, style)
+        # show_progress()
