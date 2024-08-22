@@ -27,7 +27,7 @@ jobs:
         
     - name: run pyinstaller
       run: |
-        pyinstaller --onefile ./parser_exe.py
+        pyinstaller --onefile ./main.py
         
     - name: check what files we cooked up
       run: |
@@ -64,7 +64,7 @@ jobs:
   
       - name: run pyinstaller
         run: |
-          pyinstaller --onefile ./parser_exe.py
+          pyinstaller --onefile ./main.py
   
       - name: copy test into dist folder
         run: |
