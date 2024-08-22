@@ -14,6 +14,10 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
+
+    - name: Get current date and time
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H_%M_%S')"
         
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -24,11 +28,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        
+
     - name: run pyinstaller
       run: |
         pyinstaller --onefile ./main.py
-  
+
     - name: upload artifacts     
       uses: actions/upload-artifact@v2
       with:
@@ -36,6 +40,7 @@ jobs:
         path: |
           ./build/*
           ./dist/*
+
     - name: release all files
       uses: softprops/action-gh-release@v1
       with:
