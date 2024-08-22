@@ -1,54 +1,66 @@
 from tkinter import filedialog
-from configparser import ConfigParser
-from parser.parse_man import parse_folder, process_file
-import os
+import tkinter as tk
+import json, os
+ 
+SAVE_FILE = "saved_files.json"
 
-# class userinfo(): # need to fix CONFIG parser
+class front_end: # abstract GUI-dependent code
 
-# parser = ConfigParser()
-# parser.read("saved_paths.txt")
+    def drop(self, event, location, box):
+        event_list = event.data
+        values = [str(x) for x in event_list[event]]
+        path = " ".join(values)
 
-# grab_dir = parser.get('user_paths', 'grab')
-# initial_origin = grab_dir
-# upload_dir = parser.get('user_paths', 'upload')
-# initial_dest = upload_dir
+        location.set(path) # upload_path/deload_path 
+        box.insert("end", path) # llistbox/rlistbox
 
+    def select(self, location, box):
+        files = filedialog.askdirectory(title="File Select") # gui dependent
+        files = str(files)
+        if files:
+            location.set(files) # upload_path/deload_path
+            box.insert("end", files) # llistbox/rlistbox
 
-def select():
-    global files
-    wawa = filedialog.askopenfilenames(title="Select")  # mk include inital dir
-    files = str(wawa[0])
-    print(files)
-    # "('C:/Users/rexro/Documents/06_14_2024_16_42_58-fixed.mcap',)"
+    def select_button(self, location, box):
+        try:
+            selected_file = box.get(box.curselection())
+            location.set(selected_file)
+        except tk.TclError:
+            tk.messagebox.showerror("No file selected in the left listbox.") # gui dependent
 
+class persistence: # needs error handling
 
-def drop(root, event):
-    global files
-    files = str(root.tk.splitlist(event.data))
+    def save_files(self, left, right):
+        data = {
+            "upload_files": list(left.get(0, tk.END)),
+            "deload_files": list(right.get(0, tk.END)),
+        }
+        with open(SAVE_FILE, "w") as f:
+            json.dump(data, f)
 
+    def load_files(self, left, right):
+        if os.path.exists(SAVE_FILE):
+            with open(SAVE_FILE, "r") as f:
+                data = json.load(f)
+                for file in data.get("upload_files", []):
+                    left.insert(tk.END, file)
+                for file in data.get("deload_files", []):
+                    right.insert(tk.END, file)
 
-def upload():
-    global dir
-    dir = str(filedialog.askdirectory(title="Upload Dir"))  # mk include initial dir
+def show_progress(position, length, bar): # not accessed
+    step_value = position / length
 
+    bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
+    bar.step(step_value)
+    # app.update_idletasks()
+    bar.grid_forget()
 
-# def style_select(): # need to find solution within this scope
-#     global style
-#     style =
+def handle_files(upload_path, deload_path, parse_form, parse):
+    upload = upload_path.get()
+    deload = deload_path.get() + "/"
+    style = parse_form.get()
 
-
-def handle_files():
-    fileExtension = os.path.splitext(files)[1]
-    print(fileExtension)
-
-    if fileExtension == ".mcap',)":  # better ways to do this ?
-        process_file(files, dir, style)
-    else:
-        parse_folder(files, dir, style)
-
-    print(f"Parsing {files} into {dir} formatted in {style}")
-
-
-files = " "
-dir = " "
-style = " "
+    print(upload, deload, style) # just for debugging
+    if (upload != "Upload dir") or (deload != "Deload dir/"): # change to (!= default)
+        parse(upload, deload, style)
+        # show_progress()
