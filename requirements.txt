@@ -1,5 +1,6 @@
 mcap         
-mcap_protobuf
+mcap-protobuf-support
 tkinter
 argparse
 tkinterdnd2
+pyinstaller
