@@ -28,12 +28,6 @@ jobs:
     - name: run pyinstaller
       run: |
         pyinstaller --onefile ./main.py
-        
-    - name: check what files we cooked up
-      run: |
-        ls -R
-        cp -r ./test ./dist
-        cp ./dataPlots.m ./dist
   
     - name: upload artifacts     
       uses: actions/upload-artifact@v2
@@ -65,23 +59,6 @@ jobs:
       - name: run pyinstaller
         run: |
           pyinstaller --onefile ./main.py
-  
-      - name: copy test into dist folder
-        run: |
-          ls -r
-          mkdir .\dist\test
-          xcopy ".\test" ".\dist\test" /E
-          copy ".\dataPlots.m" ".\dist"
-  
-      - name: release-downloader
-        uses: robinraju/release-downloader@v1.8
-        with:
-          repository:
-              KSU-MS/ksu-ms-dbc
-          latest: true
-          fileName: "*.dbc"
-          out-file-path: |
-              ./dist/dbc-files/
   
       - name: upload artifacts
         uses: actions/upload-artifact@v2
