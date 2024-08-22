@@ -2,27 +2,44 @@ import csv
 
 
 def write_csv_TVN(file_name, data, output):
-    with open(output + file_name + ".csv", mode="w", newline="") as file:
+    with open(output + file_name + ".csv", mode="w", newline="", buffering=1) as file:
+        # Open the file
         writer = csv.writer(file)
 
+        # Ram fuckery prevention
+        buffer = []
+        buf_size = 500
+
+        # Write the header
         topics = ["Time", "Name", "Value"]
         writer.writerow(topics)
 
+        # Iterate thru everything
         for point in data:
             for val in point:
-                writer.writerow(val)
+                buffer.append(val)
+
+                # Clear buf if too buff
+                if len(buffer) >= buf_size:
+                    writer.writerows(buffer)
+                    file.flush()
+                    buffer.clear()
 
 
 def write_csv_OMNI(file_name, data, topics, output):
-    with open(output + file_name + ".csv", mode="w", newline="") as file:
-        # Set some gizmos up
+    with open(output + file_name + ".csv", mode="w", newline="", buffering=1) as file:
+        # Open the guy
         writer = csv.writer(file)
-        mod_data = []
+
+        # Ram fuckery prevention
+        buffer = []
+        buf_size = 500
 
         # Add time to the header of the file
         topics.insert(0, "Time")
         writer.writerow(topics)
 
+        # Iterate thru the data
         for point in data:
             mod_row = []  # Make a holder for this row
             mod_row.append(point[0][0])  # Get the timestamp
@@ -32,7 +49,11 @@ def write_csv_OMNI(file_name, data, topics, output):
                 else:
                     for val in point:  # append the values if the first signal is right
                         mod_row.append(val[2])
-            mod_data.append(mod_row)  # Add to the final csv
 
-        for row in mod_data:
-            writer.writerow(row)
+            buffer.append(mod_row)
+
+            # Clear buf if too buff
+            if len(buffer) >= buf_size:
+                writer.writerows(buffer)
+                file.flush()
+                buffer.clear()
