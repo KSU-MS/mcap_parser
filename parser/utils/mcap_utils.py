@@ -18,6 +18,7 @@ def parse_mcap(file):
         proto_msg,
     ) in reader.iter_decoded_messages():
         field_names = [field.name for field in proto_msg.DESCRIPTOR.fields]
+
         topic_data = []
 
         # This goes over each feild for the topic

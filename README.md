@@ -1,18 +1,23 @@
+Just download the prepackeged guy from the releases and go parse
+
+# Side note
+You may need a fuckton of ram, im working on it but not fast
+
 # Overall
- - [ ] Package better
+ - [x] Package better
  - [ ] Write nix overlay
- - [ ] update reqs.txt
+ - [x] update reqs.txt
 
  ## PARSER
   - [x] Get mcap basic parsing done
   - [x] Get a file out in the omni format
   - [x] Write the thread dispatcher
   - [x] Add recursive folder scanning
-  - [ ] Auto detect file or folder
+  - [x] Auto detect file or folder
   - [ ] Add auto fix of MCAP files
+    ^ I honestly have no clue how to do this cleanly
  
  ## GUI
   - [x] Make GUI
   - [ ] persistance for file paths and format
-  - [ ] add persistance for file structure b4 parse
-  - [ ] Identify the diff between file and folder and parse acordingly
+  - [ ] Fix Drag n Drop support
