@@ -3,14 +3,13 @@ import customtkinter as ctk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 import gui.utils.file_utils as Utilities
 
-
 class Application(ctk.CTk):
     def __init__(self, parse):
         super().__init__()
-        layout = Utilities.LayoutManager(self)
+        self.layout = Utilities.UIManager(self)
         persistence = Utilities.Persistence()
-        self.utils = Utilities.InputMethods()
-
+        self.utils = Utilities.InputManager()
+        
         self.upload_path = ctk.StringVar(value="Upload dir")
         self.deload_path = ctk.StringVar(value="Deload dir")
         self.parse_form = ctk.StringVar(value='OMNI')
@@ -25,12 +24,11 @@ class Application(ctk.CTk):
         self.right_frame_init = RightFrame(self)
         self.progress_bar = ctk.CTkProgressBar(self, mode="indeterminate")
         
-        layout.configure_grid()
-        layout.place_frames(
+        self.layout.configure_grid()
+        self.layout.place_frames(
             left_frame = self.left_frame_init,
             right_frame = self.right_frame_init,
             middle_frame = self.middle_frame_init,
-            progress_bar = self.progress_bar
         )
         persistence.load_files(
             left = self.left_frame_init.llistbox, 
@@ -95,12 +93,17 @@ class MiddleFrame(ctk.CTkFrame):
         tvn = ctk.CTkRadioButton(self, text="TVN", variable=parent.parse_form, value="TVN")
         tvn.pack(pady=10, anchor="s", fill="x")
 
-        process = ctk.CTkButton(self, text="Parse", command=lambda: Utilities.handle_files(
-                parent.upload_path, 
-                parent.deload_path, 
-                parent.parse_form, 
-                parse
+        process = ctk.CTkButton(self, text="Parse", command=lambda:[
+            Utilities.handle_files(
+                    parent.upload_path, 
+                    parent.deload_path, 
+                    parent.parse_form, 
+                    parse
+                ),
+            parent.layout.show_progress(
+                progress_bar = parent.progress_bar
             )
+            ]
         )
         process.pack(pady=10, anchor="s", fill="x")
 

@@ -4,7 +4,7 @@ import json, os
  
 SAVE_FILE = "saved_files.json"
 
-class LayoutManager:
+class UIManager:
     def __init__(self, parent):
         self.parent = parent
 
@@ -16,14 +16,25 @@ class LayoutManager:
 
         self.parent.grid_rowconfigure(1, weight=0) # progress bar row
 
-    def place_frames(self, left_frame, middle_frame, right_frame, progress_bar):
+    def place_frames(self, left_frame, middle_frame, right_frame):
         left_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         middle_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
         right_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
         
+    def show_progress(self, progress_bar):
+        global tasks
+        global task_index
+        
         progress_bar.grid(row=1, column=0, columnspan=3, sticky="ew", padx=20, pady=10)
+        progress = (task_index/len(tasks))*100
 
-class InputMethods: # abstract GUI-dependent code
+        while (progress != 100):
+            progress_bar.step(progress)
+            # parent.update_idletasks()
+
+        progress_bar.grid_forget()
+
+class InputManager: # abstract GUI-dependent code
 
     def drop(self, event, location, box):
         event_list = event.data
@@ -66,14 +77,6 @@ class Persistence: # needs error handling
                 for file in data.get("deload_files", []):
                     right.insert(tk.END, file)
 
-def show_progress(position, length, bar): # not accessed
-    step_value = position / length
-
-    bar.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
-    bar.step(step_value)
-    # app.update_idletasks()
-    bar.grid_forget()
-
 def handle_files(upload_path, deload_path, parse_form, parse):
     upload = upload_path.get()
     deload = deload_path.get() + "/"
@@ -82,6 +85,5 @@ def handle_files(upload_path, deload_path, parse_form, parse):
     # have "default" rather than string, don't like hardcode here
     if (upload != "Upload dir") and (deload != "Deload dir/"): 
         parse(upload, deload, style)
-        # show_progress()
     else:
         tk.messagebox.showerror("No path selected") # gui dependent (also doesn't show string)
