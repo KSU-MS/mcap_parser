@@ -73,10 +73,14 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v2
+          
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'  # Replace '3.x' with your Python version
 
       - name: install dependencies
         run: |
-          python -V # Why are you like this python
           python -m pip install --upgrade pip
           pip install -r requirements.txt
   
