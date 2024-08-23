@@ -7,8 +7,25 @@ on:
     branches: "main"
 
 jobs:
-  build-linux:
+  # Create the release to hold the files
+  create-release:
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: ${{ github.ref_name }}_release_${{ github.run_number }}
+          draft: false
+          prerelease: false
 
+  # Build the bin and append to the release
+  build-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +39,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # Replace '3.x' with your Python version
+        python-version: '3.12'  # Replace '3.x' with your Python version
         
     - name: install dependencies
       run: |
@@ -33,26 +50,61 @@ jobs:
       run: |
         pyinstaller --onefile ./mcap_parser.py
 
-    - name: vibe check
+    - name: compress artifact
       run: |
-        ls
+        tar -czvf parser-exe-linux.tar.gz ./dist/
 
-    - name: upload artifacts     
-      uses: actions/upload-artifact@v2
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: parser-exe-linux
-        path: |
-          ./dist/*
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./parser-exe-linux.tar.gz
+        asset_name: mcap_parser.tar.gz
+        asset_content_type: application/zip
 
-    - name: release all files
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}-${{ steps.date.outputs.date }} 
-        files: |
-          ./dist/*
+    # - name: upload artifacts     
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: parser-exe-linux
+    #     path: |
+    #       ./dist/*
 
+    # - name: release all files
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     tag_name: ${{ github.ref_name }}-${{ steps.date.outputs.date }} 
+    #     files: |
+    #       ./dist/*
+        
+  # release-bin:
+  #   needs: [build-linux,create-release]
+  #   runs-on: ubuntu-latest
+  #   steps:
+
+      # - name: download artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: parser-exe-linux
+      #     path: parser-exe-download
+
+      # - name: compress artifact
+      #   run: |
+      #     tar -czvf parser-exe-linux.tar.gz ./parser-exe-download
+      #
+      # - name: Upload release asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ needs.create-release.outputs.upload_url }}
+      #     asset_path: ./parser-exe-linux.tar.gz
+      #     asset_name: mcap_parser.tar.gz
+      #     asset_content_type: application/zip
+
+  # Build the bin for windows and append to release
   build-windows:
-
     runs-on: windows-latest
 
     steps:
@@ -68,78 +120,47 @@ jobs:
         run: |
           pyinstaller --onefile ./mcap_parser.py
 
-      - name: vibe check
-        run: |
-          ls
-  
-      - name: upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: parser-exe-windows
-          path: |
-              ./dist/*
-
-  create-exe-release:
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.run_number }}
-          release_name: ${{ github.ref_name }}_release_${{ github.run_number }}
-          draft: false
-          prerelease: false
-        
-  release-bin:
-    needs: [build-linux,create-exe-release]
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: parser-exe-linux
-          path: parser-exe-download
-
       - name: compress artifact
         run: |
-          tar -czvf parser-exe-linux.tar.gz ./parser-exe-download
+          Compress-Archive ./dist parser-exe-windows.zip
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create-exe-release.outputs.upload_url }}
-          asset_path: ./parser-exe-linux.tar.gz
-          asset_name: parser_exe_linux.tar.gz
-          asset_content_type: application/zip
-
-  release-exe:
-    needs: [build-windows,create-exe-release]
-    runs-on: windows-latest
-    steps:
-      - name: download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: parser-exe-windows
-          path: parser-exe-download
-
-      - name: compress artifact
-        run: |
-          Compress-Archive ./parser-exe-download parser-exe-windows.zip
-
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-exe-release.outputs.upload_url }}
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./parser-exe-windows.zip
-          asset_name: parser_exe_windows.zip
+          asset_name: mcap_parser.zip
           asset_content_type: application/zip
+  
+  #     - name: upload artifacts
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: parser-exe-windows
+  #         path: |
+  #             ./dist/*
+  #
+  # release-exe:
+  #   needs: [build-windows,create-release]
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: download artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: parser-exe-windows
+  #         path: parser-exe-download
+  #
+  #     - name: compress artifact
+  #       run: |
+  #         Compress-Archive ./parser-exe-download parser-exe-windows.zip
+  #
+  #     - name: Upload release asset
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.create-release.outputs.upload_url }}
+  #         asset_path: ./parser-exe-windows.zip
+  #         asset_name: mcap_parser.zip
+  #         asset_content_type: application/zip
