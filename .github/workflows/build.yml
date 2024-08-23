@@ -33,6 +33,10 @@ jobs:
       run: |
         pyinstaller --onefile ./main.py
 
+    - name: vibe check
+      run: |
+        ls
+
     - name: upload artifacts     
       uses: actions/upload-artifact@v2
       with:
@@ -46,7 +50,7 @@ jobs:
       with:
         tag_name: ${{ github.ref_name }}-${{ steps.date.outputs.date }} 
         files: |
-          ./*
+          ./dist/*
 
   build-windows:
 
@@ -64,6 +68,10 @@ jobs:
       - name: run pyinstaller
         run: |
           pyinstaller --onefile ./main.py
+
+      - name: vibe check
+        run: |
+          ls
   
       - name: upload artifacts
         uses: actions/upload-artifact@v2
@@ -71,8 +79,6 @@ jobs:
           name: parser-exe-windows
           path: |
               ./dist/*
-              ./build/*
-              ./*.m
 
   create-exe-release:
     outputs:
