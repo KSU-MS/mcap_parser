@@ -4,7 +4,7 @@ from parser.parse_man import parse
 from gui.gooey import open_gui
 
 
-if __name__ == "__main__":
+def main():
     # Setup the parser
     apar = ArgumentParser(
         description="A basic MCAP parser into CSV",
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     cli.add_argument("-s", type=str, required=True, help="Source of files")
     cli.add_argument("-d", type=str, required=True, help="Destination of files")
     cli.add_argument("--style", choices=["OMNI", "TVN"], help="Style of parse")
-    # cli.add_argument("-r", type=bool, help="Enables recursion and multithreading")
+    cli.add_argument("-r", type=bool, help="Enables recursion and multithreading")
 
     # TODO: Make these real
     # cli.add_argument("-r", help="Will recurse through nested folders")
@@ -38,4 +38,8 @@ if __name__ == "__main__":
         open_gui(parse)
 
     elif args.mode == "cli":
-        parse(args.s, args.d, args.style)
+        parse(args.s, args.d, args.style, args.r)
+
+
+if __name__ == "__main__":
+    main()
