@@ -25,6 +25,11 @@ def write_csv_TVN(file_name, data, output):
                     file.flush()
                     buffer.clear()
 
+        # global progress_position
+        # progress_position += 1
+        #
+        # print("Done on thread: " + str(progress_position))
+
 
 def write_csv_OMNI(file_name, data, topics, output):
     with open(output + file_name + ".csv", mode="w", newline="", buffering=1) as file:

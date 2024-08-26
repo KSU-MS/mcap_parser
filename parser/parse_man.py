@@ -7,37 +7,34 @@ from .utils.mcap_utils import parse_mcap
 
 def parse(input, output, style):
     # Make a list to hold active threads
-    global tasks
     tasks = []
 
     # Get all the files and roots of folders
+    # if recursive:
     if os.path.isdir(input):
         for root, dirs, all_files in os.walk(input):
             for file in all_files:
                 thread_file(tasks, root, file, output, style)
 
-    else:
-        thread_file(tasks, "./", input, output, style)
+        global progress_length
+        progress_length = len(tasks)
 
-    global progress_length
-    global progress_position
-    progress_length = len(tasks)
-    progress_position = 0
+        global progress_position
+        progress_position = 0
 
-    # This just makes us wait until all tasks have been executed
-    for task in tasks:
-        task.join()
-        progress_position += 1
+    # else:
+    process_file(input, output, style)
 
     print("Done")
 
 
-def thread_file(list, root, file, output, style):
-    if file.endswith(".mcap"):
+def thread_file(list, root, input, output, style):
+    if input.endswith(".mcap"):
         # Get the full directory by combing the active root with the file name
-        file_dir = os.path.join(root, file)
+        file_dir = os.path.join(root, input)
 
         # Make a task (fancy thread), append it to the list, and then start it
+        multiprocessing.set_start_method("spawn")
         new_task = multiprocessing.Process(
             target=process_file, args=(file_dir, output, style)
         )
@@ -46,12 +43,13 @@ def thread_file(list, root, file, output, style):
         new_task.start()
 
 
-def process_file(file, output, style):
-    with open(file, mode="rb") as file:
-        data, topics = parse_mcap(file)
+def process_file(input, output, style):
+    if input.endswith(".mcap"):
+        with open(input, mode="rb") as file:
+            data, topics = parse_mcap(file)
 
-        if style == "TVN":
-            write_csv_TVN(Path(file.name).stem, data, output)
+            if style == "TVN":
+                write_csv_TVN(Path(file.name).stem, data, output)
 
-        if style == "OMNI":
-            write_csv_OMNI(Path(file.name).stem, data, topics, output)
+            if style == "OMNI":
+                write_csv_OMNI(Path(file.name).stem, data, topics, output)
