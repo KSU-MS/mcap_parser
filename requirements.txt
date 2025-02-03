@@ -4,3 +4,6 @@ argparse
 customtkinter
 tkinterdnd2
 pyinstaller
+numpy
+pandas
+matplotlib

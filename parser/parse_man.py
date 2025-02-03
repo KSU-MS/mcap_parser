@@ -1,8 +1,9 @@
 import os
 import subprocess
 from pathlib import Path
-from .utils.csv_utils import write_csv_TVN, write_csv_OMNI
 from .utils.mcap_utils import parse_mcap
+from .utils.csv_utils import write_csv_TVN, write_csv_OMNI
+from .utils.ld_utils import write_ld
 
 
 def parse(input, output, style, recursive):
@@ -59,3 +60,6 @@ def process_file(input, output, style):
 
             if style == "OMNI":
                 write_csv_OMNI(Path(file.name).stem, data, topics, output)
+
+            if style == "i2":
+                write_i2()

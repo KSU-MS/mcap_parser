@@ -1,3 +1,7 @@
 /target
 *.csv
 *.mcap
+parser/__pycache__
+parser/utils/__pycache__
+.envrc
+gui/__pycache__
