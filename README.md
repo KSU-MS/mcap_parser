@@ -5,7 +5,7 @@ You may need a fuckton of ram, im working on it but not fast
 
 # Overall
  - [x] Package better
- - [ ] Write nix overlay
+ - [x] Write nix overlay
  - [x] update reqs.txt
 
  ## PARSER

@@ -1,7 +1,7 @@
 import sys
 from argparse import ArgumentParser
 from parser.parse_man import parse
-from gui.gooey import open_gui
+from gui.gui_man import run_gui
 
 
 def main():
@@ -19,26 +19,25 @@ def main():
     # Add args for headless parser
     cli.add_argument("-s", type=str, required=True, help="Source of files")
     cli.add_argument("-d", type=str, required=True, help="Destination of files")
-    cli.add_argument("--style", choices=["OMNI", "TVN"], help="Style of parse")
-    cli.add_argument("-r", type=bool, help="Enables recursion and multithreading")
+    cli.add_argument("--style", choices=["TNV", "OMNI", "LD"], help="Style of parse")
+    cli.add_argument("-r", type=bool, help="Enables recursion through nested folders")
+    cli.add_argument("-m", choices=["none", "legacy", "x"], help="Multithreading")
 
     # TODO: Make these real
-    # cli.add_argument("-r", help="Will recurse through nested folders")
-    # cli.add_argument("-x", help="Experimental multithreading for larger files")
     # cli.add_argument("-n", help="Does not try to preserve file structure")
 
     # Run GUI if no args get passed
     if len(sys.argv) == 1:
-        open_gui(parse)
+        run_gui(parse)
 
     # Collect flags
     args = apar.parse_args()
 
     if args.mode == "gui":
-        open_gui(parse)
+        run_gui(parse)
 
     elif args.mode == "cli":
-        parse(args.s, args.d, args.style, args.r)
+        parse(args.s, args.d, args.style, args.r, args.m)
 
 
 if __name__ == "__main__":

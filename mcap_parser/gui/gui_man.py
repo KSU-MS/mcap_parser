@@ -1,87 +1,94 @@
 import customtkinter
+from customtkinter import filedialog
 # from tkinterdnd2 import TkinterDnD # He is fucked on my install rn
 
+# Setup all our static elements
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
 
 app = customtkinter.CTk()
 app.geometry("400x780")
-app.title("CustomTkinter simple_example.py")
+app.title("MCAP Parser utility")
 
-# print(type(app), isinstance(app, TkinterDnD.Tk))
+frame = customtkinter.CTkFrame(master=app)
+frame.pack(pady=0, padx=0, fill="both", expand=True)
+
+header = customtkinter.CTkLabel(master=frame, text="MCAP Parser")
+header.pack(anchor="w", pady=10, padx=10)
+
+subheader = customtkinter.CTkLabel(master=frame, text="")
+subheader.pack(anchor="w", pady=10, padx=10)
+
+target = None
+dest = None
 
 
-def button_callback():
-    print("Button click", combobox_1.get())
+def run_gui(parse):
+    def source_callback():
+        global target  # I love python scope
 
+        if recurse_toggle.get():
+            target = filedialog.askdirectory()
+        else:
+            target = filedialog.askopenfilename()
 
-def slider_callback(value):
-    progressbar_1.set(value)
+        header.configure(text=target)
 
+    file_pick = customtkinter.CTkButton(
+        master=frame,
+        command=source_callback,
+        text="Pick source file path",
+    )
+    file_pick.pack(anchor="w", pady=10, padx=10)
 
-frame_1 = customtkinter.CTkFrame(master=app)
-frame_1.pack(pady=20, padx=60, fill="both", expand=True)
+    parsemenu = customtkinter.CTkOptionMenu(frame, values=["TNV", "OMNI", "LD"])
+    parsemenu.pack(anchor="w", pady=10, padx=10)
+    parsemenu.set("Output type")
 
-label_1 = customtkinter.CTkLabel(master=frame_1, justify=customtkinter.LEFT)
-label_1.pack(pady=10, padx=10)
+    recurse_toggle = customtkinter.CTkSwitch(master=frame, text="Enable recursion")
+    recurse_toggle.pack(anchor="w", pady=10, padx=10)
 
-progressbar_1 = customtkinter.CTkProgressBar(master=frame_1)
-progressbar_1.pack(pady=10, padx=10)
+    mutlithread_toggle = customtkinter.CTkSwitch(
+        master=frame, text="Enable multithreading (experimental)"
+    )
+    mutlithread_toggle.pack(anchor="w", pady=10, padx=10)
 
-button_1 = customtkinter.CTkButton(master=frame_1, command=button_callback)
-button_1.pack(pady=10, padx=10)
+    def dest_callback():
+        global dest
+        dest = filedialog.askdirectory()
+        subheader.configure(text=dest)
 
-slider_1 = customtkinter.CTkSlider(
-    master=frame_1, command=slider_callback, from_=0, to=1
-)
-slider_1.pack(pady=10, padx=10)
-slider_1.set(0.5)
+    file_pick = customtkinter.CTkButton(
+        master=frame,
+        command=dest_callback,
+        text="Pick output file path",
+    )
+    file_pick.pack(anchor="w", pady=10, padx=10)
 
-entry_1 = customtkinter.CTkEntry(master=frame_1, placeholder_text="CTkEntry")
-entry_1.pack(pady=10, padx=10)
+    def parse_callback():
+        if (target is None) or (dest is None):
+            header.configure(text="Pick a source and output path first")
+        else:
+            if parsemenu.get() == "Output type":
+                header.configure(text="Pick a output type first")
+            else:
+                parse(
+                    target,
+                    dest,
+                    parsemenu.get(),
+                    recurse_toggle.get(),
+                    mutlithread_toggle.get(),
+                )
 
-optionmenu_1 = customtkinter.CTkOptionMenu(
-    frame_1, values=["Option 1", "Option 2", "Option 42 long long long..."]
-)
-optionmenu_1.pack(pady=10, padx=10)
-optionmenu_1.set("CTkOptionMenu")
+    file_pick = customtkinter.CTkButton(
+        master=frame,
+        command=parse_callback,
+        text="Parse selected",
+    )
+    file_pick.pack(anchor="w", pady=10, padx=10)
 
-combobox_1 = customtkinter.CTkComboBox(
-    frame_1, values=["Option 1", "Option 2", "Option 42 long long long..."]
-)
-combobox_1.pack(pady=10, padx=10)
-combobox_1.set("CTkComboBox")
+    # Fix this shit later
+    # progress = customtkinter.CTkProgressBar(master=frame)
+    # progress.pack(pady=10, padx=10)
 
-checkbox_1 = customtkinter.CTkCheckBox(master=frame_1)
-checkbox_1.pack(pady=10, padx=10)
-
-radiobutton_var = customtkinter.IntVar(value=1)
-
-radiobutton_1 = customtkinter.CTkRadioButton(
-    master=frame_1, variable=radiobutton_var, value=1
-)
-radiobutton_1.pack(pady=10, padx=10)
-
-radiobutton_2 = customtkinter.CTkRadioButton(
-    master=frame_1, variable=radiobutton_var, value=2
-)
-radiobutton_2.pack(pady=10, padx=10)
-
-switch_1 = customtkinter.CTkSwitch(master=frame_1)
-switch_1.pack(pady=10, padx=10)
-
-text_1 = customtkinter.CTkTextbox(master=frame_1, width=200, height=70)
-text_1.pack(pady=10, padx=10)
-text_1.insert("0.0", "CTkTextbox\n\n\n\n")
-
-segmented_button_1 = customtkinter.CTkSegmentedButton(
-    master=frame_1, values=["CTkSegmentedButton", "Value 2"]
-)
-segmented_button_1.pack(pady=10, padx=10)
-
-tabview_1 = customtkinter.CTkTabview(master=frame_1, width=300)
-tabview_1.pack(pady=10, padx=10)
-tabview_1.add("CTkTabview")
-tabview_1.add("Tab 2")
-
-app.mainloop()
+    app.mainloop()
