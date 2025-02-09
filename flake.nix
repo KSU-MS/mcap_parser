@@ -53,54 +53,35 @@
           src = src_repo + "/python/mcap-protobuf-support";
         };
 
-        nicegui = pkgs.python311Packages.buildPythonPackage rec {
-          pname = "nice-gui";
-          version = "2.10.1";
+        tkinterdnd2 = pkgs.python311Packages.buildPythonPackage rec {
+          pname = "tkinterdnd2";
+          version = "1.0.0";
           format = "pyproject";
 
           src_repo = pkgs.fetchFromGitHub {
-            owner = "zauberzeug";
-            repo = "nicegui";
-            rev = "v${version}";
-            sha256 = "sha256-XMPW0fWi13cffVF/PY9+lTv6eQo7f2JpjV3wkqmMqQU=";
+            owner = "Eliav2";
+            repo = "tkinterdnd2";
+            rev = "9a55907e430234bf8ab72ea614f84af9cc89598c";
+            sha256 = "sha256-ataKvBsFqKcuz7C2JfhnG7vjB9OspkBYyMWXOrGlCog=";
           };
 
-          propagatedBuildInputs = [ 
-            pkgs.python311Packages.setuptools
-            pkgs.python311Packages.poetry-core
-            pkgs.python311Packages.pygments
-            pkgs.python311Packages.aiofiles
-            pkgs.python311Packages.aiohttp
-            pkgs.python311Packages.certifi
-            pkgs.python311Packages.docutils
-            pkgs.python311Packages.fastapi
-            pkgs.python311Packages.httpx
-            pkgs.python311Packages.ifaddr
-            pkgs.python311Packages.itsdangerous
-            pkgs.python311Packages.jinja2
-            pkgs.python311Packages.markdown2
-            pkgs.python311Packages.orjson
-            pkgs.python311Packages.python-multipart
-            pkgs.python311Packages.python-socketio
-            pkgs.python311Packages.requests
-            pkgs.python311Packages.typing-extensions
-            pkgs.python311Packages.urllib3
-            pkgs.python311Packages.uvicorn
-            pkgs.python311Packages.vbuild
-            pkgs.python311Packages.watchfiles
-          ];
+          propagatedBuildInputs = [ pkgs.python311Packages.setuptools ];
 
-          src = src_repo;
+          # Extract the specific subdirectory within the repository
+          src = src_repo + "/";
         };
 
       in with pkgs; {
         devShells.default = mkShell {
           venvDir = ".venv";
-          packages = [
+          packages = [ 
+            pkgs.xorg.libXcursor
+
             ([ pkgs.python311 ] ++ (with pkgs.python311Packages; [
               mcap         
               mcap-protobuf-support
-              nicegui
+              tkinterdnd2
+              customtkinter
               argparse
               pyinstaller
               numpy
