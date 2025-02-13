@@ -12,7 +12,7 @@
           overlays = custom_overlays;
         };
 
-        mcap = pkgs.python311Packages.buildPythonPackage rec {
+        mcap = pkgs.python312Packages.buildPythonPackage rec {
           pname = "mcap";
           version = "1.2.2";
           format = "pyproject";
@@ -25,16 +25,16 @@
           };
 
           propagatedBuildInputs = [ 
-            pkgs.python311Packages.setuptools 
-            pkgs.python311Packages.lz4 
-            pkgs.python311Packages.zstandard
+            pkgs.python312Packages.setuptools 
+            pkgs.python312Packages.lz4 
+            pkgs.python312Packages.zstandard
           ];
 
           # Extract the specific subdirectory within the repository
           src = src_repo + "/python/mcap";
         };
 
-        mcap-protobuf-support = pkgs.python311Packages.buildPythonPackage rec {
+        mcap-protobuf-support = pkgs.python312Packages.buildPythonPackage rec {
           pname = "mcap";
           version = "1.2.2";
           format = "pyproject";
@@ -47,10 +47,10 @@
           };
 
           propagatedBuildInputs = [ 
-            pkgs.python311Packages.setuptools 
-            pkgs.python311Packages.lz4 
-            pkgs.python311Packages.zstandard 
-            pkgs.python311Packages.protobuf 
+            pkgs.python312Packages.setuptools 
+            pkgs.python312Packages.lz4 
+            pkgs.python312Packages.zstandard 
+            pkgs.python312Packages.protobuf 
             mcap 
           ];
 
@@ -58,7 +58,7 @@
           src = src_repo + "/python/mcap-protobuf-support";
         };
 
-        tkinterdnd2 = pkgs.python311Packages.buildPythonPackage rec {
+        tkinterdnd2 = pkgs.python312Packages.buildPythonPackage rec {
           pname = "tkinterdnd2";
           version = "1.0.0";
           format = "pyproject";
@@ -70,7 +70,7 @@
             sha256 = "sha256-ataKvBsFqKcuz7C2JfhnG7vjB9OspkBYyMWXOrGlCog=";
           };
 
-          propagatedBuildInputs = [ pkgs.python311Packages.setuptools ];
+          propagatedBuildInputs = [ pkgs.python312Packages.setuptools ];
 
           # Extract the specific subdirectory within the repository
           src = src_repo + "/";
@@ -95,17 +95,17 @@
         devShells.default = mkShell {
           venvDir = ".venv";
           packages = [ 
-            ([ pkgs.python311 ] ++ (with pkgs.python311Packages; [
+            ([ pkgs.python312 ] ++ (with pkgs.python312Packages; [
               mcap         
               mcap-protobuf-support
               tkinterdnd2
+              tkinter
               customtkinter
               argparse
               pyinstaller
               numpy
               pandas
               matplotlib
-
               pip
             ]))
           ];

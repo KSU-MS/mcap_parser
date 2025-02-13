@@ -7,9 +7,10 @@ pkgs.stdenv.mkDerivation {
   src = ./mcap_parser;
 
   buildInputs = [
-    ([ pkgs.python311 ] ++ (with pkgs.python311Packages; [
+    ([ pkgs.python312 ] ++ (with pkgs.python312Packages; [
       mcap         
       mcap-protobuf-support
+      tkinter
       customtkinter
       pyinstaller
       numpy
@@ -18,10 +19,10 @@ pkgs.stdenv.mkDerivation {
     ]))
   ];
 
-  customtkinterPath = builtins.toString pkgs.python311Packages.customtkinter;
+  # customtkinterPath = builtins.toString pkgs.python311Packages.customtkinter;
 
   installPhase = ''
-    pyinstaller --noconfirm --onedir --windowed --add-data "/nix/store/qqm523a9cd5ifg42d6v2dkh5363y1qsf-python3.11-customtkinter-5.2.2/lib/python3.11/site-packages/customtkinter:customtkinter/" "./mcap_parser.py"
+    pyinstaller --noconfirm --onedir --windowed --add-data "/nix/store/q5i6v39hjqx359n5w0chqqkkzgrppv8r-python3.12-customtkinter-5.2.2/lib/python3.12/site-packages/customtkinter/:customtkinter/" "./mcap_parser.py"
     mkdir -p $out
     mv ./dist $out
   '';

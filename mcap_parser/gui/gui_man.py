@@ -1,4 +1,5 @@
 import customtkinter
+import tkinter
 from customtkinter import filedialog
 # from tkinterdnd2 import TkinterDnD # He is fucked on my install rn
 
