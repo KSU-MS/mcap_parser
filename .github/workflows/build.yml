@@ -50,7 +50,7 @@ jobs:
       - name: run pyinstaller
         run: |
           pip show customtkinter
-          pyinstaller --noconfirm --onedir --windowed --add-data "/opt/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/customtkinter:customtkinter/"./mcap_parser/mcap_parser.py
+          pyinstaller --noconfirm --onedir --windowed --add-data "/opt/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/customtkinter:customtkinter/" ./mcap_parser/mcap_parser.py
 
       - name: compress artifact
         run: |
@@ -88,7 +88,7 @@ jobs:
       - name: run pyinstaller
         run: |
           pip show customtkinter
-          pyinstaller --noconfirm --onedir --windowed --add-data "C:\hostedtoolcache\windows\Python\3.12.9\x64\customtkinter:customtkinter\" ./mcap_parser\mcap_parser.py
+          pyinstaller --noconfirm --onedir --windowed --add-data "C:\hostedtoolcache\windows\Python\3.12.9\x64\Lib\site-packages\customtkinter:customtkinter\" ./mcap_parser\mcap_parser.py
 
       - name: compress artifact
         run: |
