@@ -9,6 +9,7 @@
       let 
         pkgs = import nixpkgs {
           inherit system;
+          overlays = custom_overlays;
         };
 
         mcap = pkgs.python311Packages.buildPythonPackage rec {
@@ -23,7 +24,11 @@
             sha256 = "VC2CfNEY7CrIwIonSvx0zsCuwcBJKvzh8+l/Ff6MJp0=";
           };
 
-          propagatedBuildInputs = [ pkgs.python311Packages.setuptools pkgs.python311Packages.lz4 pkgs.python311Packages.zstandard ];
+          propagatedBuildInputs = [ 
+            pkgs.python311Packages.setuptools 
+            pkgs.python311Packages.lz4 
+            pkgs.python311Packages.zstandard
+          ];
 
           # Extract the specific subdirectory within the repository
           src = src_repo + "/python/mcap";
@@ -71,12 +76,25 @@
           src = src_repo + "/";
         };
 
+        pkg_overlay = final: prev: {
+          mcap_parser = final.callPackage ./default.nix { 
+            mcap = mcap; 
+            mcap-protobuf-support = mcap-protobuf-support;
+          };
+        };
+        custom_overlays = [ pkg_overlay ];
+
       in with pkgs; {
+        overlays.default = nixpkgs.lib.composeManyExtensions custom_overlays;
+
+        packages = rec {
+          mcap_parser = pkgs.mcap_parser;
+          default = mcap_parser;
+        };
+
         devShells.default = mkShell {
           venvDir = ".venv";
           packages = [ 
-            pkgs.xorg.libXcursor
-
             ([ pkgs.python311 ] ++ (with pkgs.python311Packages; [
               mcap         
               mcap-protobuf-support
@@ -87,6 +105,8 @@
               numpy
               pandas
               matplotlib
+
+              pip
             ]))
           ];
         };

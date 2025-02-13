@@ -41,18 +41,6 @@ def run_gui(parse):
     )
     file_pick.pack(anchor="w", pady=10, padx=10)
 
-    parsemenu = customtkinter.CTkOptionMenu(frame, values=["TNV", "OMNI", "LD"])
-    parsemenu.pack(anchor="w", pady=10, padx=10)
-    parsemenu.set("Output type")
-
-    recurse_toggle = customtkinter.CTkSwitch(master=frame, text="Enable recursion")
-    recurse_toggle.pack(anchor="w", pady=10, padx=10)
-
-    mutlithread_toggle = customtkinter.CTkSwitch(
-        master=frame, text="Enable multithreading (experimental)"
-    )
-    mutlithread_toggle.pack(anchor="w", pady=10, padx=10)
-
     def dest_callback():
         global dest
         dest = filedialog.askdirectory()
@@ -64,6 +52,18 @@ def run_gui(parse):
         text="Pick output file path",
     )
     file_pick.pack(anchor="w", pady=10, padx=10)
+
+    parsemenu = customtkinter.CTkOptionMenu(frame, values=["TNV", "OMNI", "LD"])
+    parsemenu.pack(anchor="w", pady=10, padx=10)
+    parsemenu.set("Output type")
+
+    recurse_toggle = customtkinter.CTkSwitch(master=frame, text="Enable recursion")
+    recurse_toggle.pack(anchor="w", pady=10, padx=10)
+
+    mutlithread_toggle = customtkinter.CTkSwitch(
+        master=frame, text="Enable multithreading (experimental)"
+    )
+    mutlithread_toggle.pack(anchor="w", pady=10, padx=10)
 
     def parse_callback():
         if (target is None) or (dest is None):
