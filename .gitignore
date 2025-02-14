@@ -8,3 +8,4 @@ gui/__pycache__
 mcap_parser/gui/__pycache__
 mcap_parser/parser/__pycache__
 mcap_parser/parser/__pycache__
+mcap_parser/parser/utils/__pycache__

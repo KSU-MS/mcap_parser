@@ -54,7 +54,7 @@ def run_gui(parse):
     )
     file_pick.pack(anchor="w", pady=10, padx=10)
 
-    parsemenu = customtkinter.CTkOptionMenu(frame, values=["TNV", "OMNI", "LD"])
+    parsemenu = customtkinter.CTkOptionMenu(frame, values=["TVN", "OMNI", "LD"])
     parsemenu.pack(anchor="w", pady=10, padx=10)
     parsemenu.set("Output type")
 

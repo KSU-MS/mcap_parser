@@ -19,7 +19,7 @@ def main():
     # Add args for headless parser
     cli.add_argument("-s", type=str, required=True, help="Source of files")
     cli.add_argument("-d", type=str, required=True, help="Destination of files")
-    cli.add_argument("--style", choices=["TNV", "OMNI", "LD"], help="Style of parse")
+    cli.add_argument("--style", choices=["TVN", "OMNI", "LD"], help="Style of parse")
     cli.add_argument("-r", type=bool, help="Enables recursion through nested folders")
     cli.add_argument("-m", choices=["none", "legacy", "x"], help="Multithreading")
 

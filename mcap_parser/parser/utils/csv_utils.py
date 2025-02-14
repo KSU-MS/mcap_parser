@@ -7,8 +7,8 @@ def write_csv_TVN(file_name, data, output):
         writer = csv.writer(file)
 
         # Ram fuckery prevention
-        buffer = []
-        buf_size = 500
+        # buffer = []
+        # buf_size = 500
 
         # Write the header
         topics = ["Time", "Name", "Value"]
@@ -17,18 +17,17 @@ def write_csv_TVN(file_name, data, output):
         # Iterate thru everything
         for point in data:
             for val in point:
-                buffer.append(val)
+                writer.writerow(val)
+
+                # buffer.append(val)
 
                 # Clear buf if too buff
-                if len(buffer) >= buf_size:
-                    writer.writerows(buffer)
-                    file.flush()
-                    buffer.clear()
+                # if len(buffer) >= buf_size:
+                #     writer.writerows(buffer)
+                #     file.flush()
+                #     buffer.clear()
 
-        # global progress_position
-        # progress_position += 1
-        #
-        # print("Done on thread: " + str(progress_position))
+        file.flush()
 
 
 def write_csv_OMNI(file_name, data, topics, output):
@@ -37,8 +36,8 @@ def write_csv_OMNI(file_name, data, topics, output):
         writer = csv.writer(file)
 
         # Ram fuckery prevention
-        buffer = []
-        buf_size = 500
+        # buffer = []
+        # buf_size = 500
 
         # Add time to the header of the file
         topics.insert(0, "Time")
@@ -55,10 +54,14 @@ def write_csv_OMNI(file_name, data, topics, output):
                     for val in point:  # append the values if the first signal is right
                         mod_row.append(val[2])
 
-            buffer.append(mod_row)
+            writer.writerow(mod_row)
+
+            # buffer.append(mod_row)
 
             # Clear buf if too buff
-            if len(buffer) >= buf_size:
-                writer.writerows(buffer)
-                file.flush()
-                buffer.clear()
+            # if len(buffer) >= buf_size:
+            #     writer.writerows(buffer)
+            #     file.flush()
+            #     buffer.clear()
+
+        file.flush()
