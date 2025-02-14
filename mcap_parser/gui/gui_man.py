@@ -44,7 +44,7 @@ def run_gui(parse):
 
     def dest_callback():
         global dest
-        dest = filedialog.askdirectory()
+        dest = filedialog.askdirectory() + "/"
         subheader.configure(text=dest)
 
     file_pick = customtkinter.CTkButton(
